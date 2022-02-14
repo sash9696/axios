@@ -1,56 +1,53 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import React, { useState } from 'react';
 import './App.css';
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 function App() {
+  const [todoText, setTodoText] = useState('');
+  const [todoList, setTodoList] = useState([])
+
+  const handleChange = (event) => {
+      setTodoText(event.target.value)
+      
+  }
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      setTodoList((arr) => [...arr, todoText])
+      setTodoText('')
+  }
+  const deleteToDo = (key) => {
+     todoList.splice(key, 1);
+     setTodoList((arr) => [...arr])
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+    <div className="app">
+      <header className='app-header'>
+          <h1>To Do</h1>
       </header>
+      <form>
+          
+          <label className='todo-label'>What do you want to do today?</label>
+          <br/>
+          <input value={todoText} onChange={handleChange}  type='text'/>
+          <button onClick={handleSubmit}  className="button" type="submit" value="Submit">Submit</button>
+      </form >
+     {todoList.map((td,index) => td && (
+          <div key={index} className="todo">
+          <br/>
+          <input type='checkbox' />
+          <label >{td}</label>
+          <IconButton 
+              aria-label="delete"
+              onClick={() => deleteToDo(index)}
+          >
+              <DeleteIcon/>
+          </IconButton>
+        </div>
+     ))}
+      
+     
     </div>
   );
 }
