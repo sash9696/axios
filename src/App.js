@@ -1,55 +1,98 @@
-import React, { useState } from 'react';
-import './App.css';
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardTitle,
+  CardText
+} from "reactstrap";
+import { FaMapMarkedAlt } from "react-icons/fa";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+
+import axios from "axios";
 
 function App() {
-  const [todoText, setTodoText] = useState('');
-  const [todoList, setTodoList] = useState([])
+  const [details, setDetails] = useState([])
+  
+  console.log(details)
 
-  const handleChange = (event) => {
-      setTodoText(event.target.value)
-      
+    const fetchDetails = async () => {
+    const {data} = await axios.get("https://randomuser.me/api/");
+    setDetails(data.results[0])
+    
+
+
   }
-  const handleSubmit = (e) => {
-      e.preventDefault();
-      setTodoList((arr) => [...arr, todoText])
-      setTodoText('')
-  }
-  const deleteToDo = (key) => {
-     todoList.splice(key, 1);
-     setTodoList((arr) => [...arr])
-  }
+  useEffect(()=> {
+    fetchDetails()
+    
+  }, [])
+  
 
   return (
-    <div className="app">
-      <header className='app-header'>
-          <h1>To Do</h1>
-      </header>
-      <form>
-          
-          <label className='todo-label'>What do you want to do today?</label>
-          <br/>
-          <input value={todoText} onChange={handleChange}  type='text'/>
-          <button onClick={handleSubmit}  className="button" type="submit" value="Submit">Submit</button>
-      </form >
-     {todoList.map((td,index) => td && (
-          <div key={index} className="todo">
-          <br/>
-          <input type='checkbox' />
-          <label >{td}</label>
-          <IconButton 
-              aria-label="delete"
-              onClick={() => deleteToDo(index)}
-          >
-              <DeleteIcon/>
-          </IconButton>
-        </div>
-     ))}
-      
-     
-    </div>
+    // <Container fluid className="p-4 bg-primary App">
+    //   <Row>
+    //     <Col md={4} className="offset-md-4 mt-4">
+    //       <Card>
+    //         <CardBody className="text-center">
+    //           <img
+    //             height="150"
+    //             width="150"
+    //             className="rounded-circle img-thumbnail border-danger"
+    //             src=" "
+    //           />
+    //           <CardTitle className="text-primary">
+    //             <h1>
+    //               <span className="pr-2">title </span>
+    //               <span>first name</span>
+    //               <span>last name</span>
+    //             </h1>
+    //           </CardTitle>
+    //           <CardText>
+    //             <FaMapMarkedAlt />
+    //              location
+    //             <p>phone</p>
+    //           </CardText>
+    //         </CardBody>
+    //       </Card>
+    //     </Col>
+    //   </Row>
+    // </Container>
+    <Container fluid className="p-4 bg-primary App">
+      <Row>
+      <Col md={4} className="offset-md-4 mt-4">
+        <Card>
+          <CardBody className="text-center">
+            <img
+                  height="150"
+                  width="150"
+                  className="rounded-circle img-thumbnail border-danger"
+                  src= {details.picture?.large}
+                />
+                <CardTitle className="text-primary">
+                  <h1>
+                    <span className="pr-2">{details.name?.title} </span>
+                    <span>{details.name?.first}</span>
+                    <span>{details.name?.last}</span>
+                  </h1>
+               </CardTitle>
+                    <CardText>
+                  <FaMapMarkedAlt />
+                  {details.location?.city}
+                  <p>{details?.phone}</p>
+                  </CardText>
+          </CardBody>
+
+        </Card>
+
+
+      </Col>
+      </Row>
+
+    </Container>
   );
 }
-
 export default App;
